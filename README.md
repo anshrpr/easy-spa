@@ -2,7 +2,7 @@
 Easy SPA is a simple architecture for creating Single Page Applications with features inspired from other JS frameworks.
 
 ## Requirements
-  - I JS for templating (https://github.com/janl/mustache.js/)
+  - Mustache JS for templating (https://github.com/janl/mustache.js/)
   - Moderately efficient Brain
 
 ## Setup
