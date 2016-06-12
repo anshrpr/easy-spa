@@ -1,4 +1,17 @@
 ;(function(window){
+	function deepCopy(source){
+		var target = source;
+		if(target && typeof target == 'object'){
+			target = Array.isArray(target)?[]:{};
+
+			for(key in source){
+				target[key] = deepCopy(source[key]);
+			}
+		}
+
+		return target;
+	}
+
 	var states = {};
 	var subscribers = {};
 
@@ -21,11 +34,9 @@
 	}
 
 	State.prototype.set = function(model, state){
-		var update = true||states[model]!==state;
+		if(states[model] != state){
+			states[model] = state;
 
-		states[model] = state;
-
-		if(update){
 			if(subscribers[model]){
 				for (var i = 0; i < subscribers[model].length; i++) {
 					subscribers[model][i].update && subscribers[model][i].update.call(subscribers[model][i]);
@@ -36,7 +47,7 @@
 	}
 
 	State.prototype.get = function(model){
-		return states[model] || null;
+		return deepCopy(states[model] || null);
 	}
 
 	window.State = new State;
