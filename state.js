@@ -34,15 +34,13 @@
 	}
 
 	State.prototype.set = function(model, state){
-		if(states[model] != state){
-			states[model] = state;
+		states[model] = deepCopy(state);
 
-			if(subscribers[model]){
-				for (var i = 0; i < subscribers[model].length; i++) {
-					subscribers[model][i].update && subscribers[model][i].update.call(subscribers[model][i]);
-					subscribers[model][i].update && subscribers[model][i].render && subscribers[model][i].render.call(subscribers[model][i]);
-				};
-			}
+		if(subscribers[model]){
+			for (var i = 0; i < subscribers[model].length; i++) {
+				subscribers[model][i].update && subscribers[model][i].update.call(subscribers[model][i]);
+				subscribers[model][i].update && subscribers[model][i].render && subscribers[model][i].render.call(subscribers[model][i]);
+			};
 		}
 	}
 
