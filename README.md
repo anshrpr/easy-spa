@@ -9,11 +9,9 @@ Easy SPA is a simple architecture for creating Single Page Applications with fea
 At the bottom of the body tag, deep where there's nothing but darkness, include these scripts
 ```html
 <script type="text/javascript" src="public/mustache.js"></script>
-<script type="text/javascript" src="public/component-loader.js"></script>
-<script type="text/javascript" src="public/router.js"></script>
-<script type="text/javascript" src="public/state.js"></script>
+<script type="text/javascript" src="public/build.js"></script>
 ```
-> P.S. Not to mention the order. The modules are dependent on each other and so the order of inclusion must be respected.
+> Mustache JS is a dependency and must be included before build file
 
 Now, anywhere before these script tags, inside the `body` (preferably in the beginning, where the sun shines the brightest), add an HTML element with id `content`. We expect that you are smart enough to know why ;)
 
@@ -82,6 +80,7 @@ To fetch a state you can call the getter with the state name.
 ```js
 var numbers = State.get("numbers");
 ```
+> Note, State.get returns a deep copy of the original object. Modifying the returned object will not affect the one set in the State. Also, State.set deep copies the passed object before overriding the existing state which has the same effect as State.get. All this is just to avoid mutations, as mutations are ugly, except when its X-Men.
 
 And lastly, subscribing to a state inside a component callback (`init` or `update`)
 ```js
@@ -89,8 +88,6 @@ State.subscribe("numbers", this);
 ```
 
 Whenever a `State.set` is called a state change happens and thus the process of notifying the subscribers. So, now you know.
-> In the later update, `State.set` will ignore the notification process if the same object is passed back to the setter to avoid mutations. As mutations are ugly, you won't realise when they really started to create a problem.
-> To tackle mutations `State.get` will return a new copy of the object on every call. But that's more in the future.
 
 # Component and ComponentLoader
 A component is a self container, reusable piece of object which acts as a controller, providing data to the view.
