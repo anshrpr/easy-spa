@@ -47,8 +47,12 @@
 			}else if(type=='object'){
 				instance = Object.assign({}, component);
 
-				if(params.container && instance.template){
-					instance.template = Object.assign({}, instance.template, {container:params.container});
+				if(instance.template){
+					if(params.container){
+						instance.template = Object.assign({}, instance.template, {container:params.container, html:component.template.html.slice(0)});
+					}else{
+						instance.template = Object.assign({}, instance.template, {html:component.template.html.slice(0)});
+					}
 				}
 			}else{
 				throw new Error("Unsupported component type '"+type+"'");
@@ -74,6 +78,7 @@
 							loadedDependencies.css.push(stylesheets[i]);
 						}
 					};
+					component.dependencies.css = undefined;
 				}
 
 				if(component.dependencies.js){
@@ -87,6 +92,7 @@
 							loadedDependencies.js.push(scripts[i]);
 						}
 					};
+					component.dependencies.js = undefined;
 				}
 			}
 
@@ -104,9 +110,29 @@
 			if(this.template.html){
 				data = data||this.data||{};
 
+				var mstidReplace = true;
+
+				if(this.template.mstid == undefined){
+					var el = document.createElement('span');
+					el.innerHTML = this.template.html;
+
+					if(el.children.length == 1){
+						el = el.children[0];
+					}
+
+					this.template.mstid = el.dataset.mstid = Math.floor(Math.random()*Date.now());
+					this.template.html = el.outerHTML;
+					mstidReplace = false;
+				}
+
 				var render = Mustache.render(this.template.html, data);
 
-				if(this.template.container){
+				if(mstidReplace){
+					var mstidContainer = document.querySelector('[data-mstid="'+this.template.mstid+'"');
+					if(mstidContainer){
+						mstidContainer.outerHTML = render;
+					}
+				}else if(this.template.container){
 					if(this.template.append){
 						this.template.container.appendChild(render);
 					}else{
